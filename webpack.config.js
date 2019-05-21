@@ -1,5 +1,7 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -31,7 +33,10 @@ module.exports = {
           },
           {
             // Interprets `@import` and `url()` like `import/require()` and will resolve them
-            loader: 'css-loader'
+            loader: 'css-loader',
+            options: {
+              url: false
+            }
           },
           {
             // Loader for webpack to process CSS with PostCSS
@@ -57,6 +62,13 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "[id].css"
-  })
+    }),
+    new CopyPlugin([
+      { from: 'src/images', to: 'images' },
+    ]),
+    new WriteFilePlugin({
+      test: /\.(png|js|css|html)$/,
+      useHashIndex: true
+    })
   ]
 };
